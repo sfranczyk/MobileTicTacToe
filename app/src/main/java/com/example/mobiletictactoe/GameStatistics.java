@@ -8,6 +8,11 @@ public class GameStatistics {
         reset();
     }
 
+    GameStatistics(int scorePlayerO, int scorePlayerX) {
+        this.scorePlayerO = scorePlayerO;
+        this.scorePlayerX = scorePlayerX;
+    }
+
     public void reset() {
         scorePlayerO = 0;
         scorePlayerX = 0;

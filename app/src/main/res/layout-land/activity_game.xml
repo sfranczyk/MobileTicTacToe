@@ -14,8 +14,8 @@ tools:context=".GameActivity">
 
         <GridView
             android:id="@+id/boardGame"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
 
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
@@ -100,12 +100,21 @@ tools:context=".GameActivity">
             </GridLayout>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/buttonNextGame"
                 android:layout_width="250sp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:text="Save and exit"
+                android:text="Next Game"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/buttonSaveAndExit"
+                android:layout_width="250sp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="Exit"
                 android:textSize="20sp" />
 
         </LinearLayout>

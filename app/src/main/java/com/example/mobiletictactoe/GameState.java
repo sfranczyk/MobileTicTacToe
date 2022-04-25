@@ -16,13 +16,13 @@ enum CellValue {
 
 public class GameState {
 
-    private final CellValue[] cellValues = new CellValue[100];
-    private CellValue currentTurn;
-    private final int[] dimensions = {10, 10};
-    private final int numberToWin = 3;
+    protected CellValue[] cellValues = new CellValue[100];
+    protected CellValue currentTurn;
+    protected final int[] dimensions = {10, 10};
+    protected int numberToWin = 5;
 
-    private CellValue winner;
-    private ArrayList<int[]> winLine;
+    protected CellValue winner = CellValue.FREE;
+    protected ArrayList<int[]> winLine = new ArrayList<>();
 
     public GameState() {
         reset(CellValue.O);
@@ -40,7 +40,7 @@ public class GameState {
     }
 
     public boolean playerMove(int cellIndex) {
-        if( cellValues[cellIndex] != CellValue.FREE || winner != null ) {
+        if( isEnd() || cellValues[cellIndex] != CellValue.FREE ) {
             return false;
         }
         cellValues[cellIndex] = currentTurn;
@@ -49,7 +49,7 @@ public class GameState {
     }
 
     public boolean checkWin() {
-        if (this.winner != null)
+        if (isEnd())
             return true;
 
         CellValue winner = CellValue.FREE;
@@ -167,15 +167,15 @@ public class GameState {
     }
 
     public boolean isEnd() {
-        return winner != null;
+        return winner != CellValue.FREE;
     }
 
     public void reset(CellValue firstPlayer) {
         for (int i = 0; i < dimensions[0] * dimensions[1]; i++) {
             cellValues[i] = CellValue.FREE;
         }
-        winner = null;
-        winLine = null;
+        winner = CellValue.FREE;
+        winLine.clear();
         currentTurn = firstPlayer;
     }
 
