@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -30,7 +31,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView textViewScorePlayerO;
     private TextView textViewScorePlayerX;
     private Button btnNextGame;
-    private Button btnSaveAndExit;
+    private Button btnBackToMenu;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -44,7 +45,7 @@ public class GameActivity extends AppCompatActivity {
         GridView board = findViewById(R.id.boardGame);
         textViewScorePlayerO = findViewById(R.id.textViewScorePlayerO);
         textViewScorePlayerX = findViewById(R.id.textViewScorePlayerX);
-        btnSaveAndExit = findViewById(R.id.buttonSaveAndExit);
+        btnBackToMenu = findViewById(R.id.buttonSaveAndExit);
         btnNextGame = findViewById(R.id.buttonNextGame);
 
         setGameObjects(savedInstanceState);
@@ -75,7 +76,7 @@ public class GameActivity extends AppCompatActivity {
             updateDisplayCurrentTurn();
         });
 
-        btnSaveAndExit.setOnClickListener((l) -> {
+        btnBackToMenu.setOnClickListener((l) -> {
             if (gameStatistics.getScorePlayerO() > 0 || gameStatistics.getScorePlayerX() > 0) {
                 ScoresRepository sr = new ScoresRepository(this);
                 sr.insertNewScore(gameStatistics.getScorePlayerO(),
@@ -152,6 +153,7 @@ public class GameActivity extends AppCompatActivity {
         return cellDimension;
     }
 
+    @SuppressLint("SetTextI18n")
     private void btnNextGameEnabled() {
 //        btnNextGame.setBackgroundColor(Color.rgb(0,191,255));
         btnNextGame.setBackgroundColor(fetchPrimaryColor());
@@ -168,7 +170,7 @@ public class GameActivity extends AppCompatActivity {
         textViewScorePlayerO.setText(Integer.toString(gameStatistics.getScorePlayerO()));
         textViewScorePlayerX.setText(Integer.toString(gameStatistics.getScorePlayerX()));
         if (gameStatistics.getScorePlayerO() > 0 || gameStatistics.getScorePlayerX() > 0) {
-            btnSaveAndExit.setText("Save and exit");
+            btnBackToMenu.setText("Back to menu");
         }
     }
 

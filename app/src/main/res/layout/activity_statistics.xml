@@ -24,8 +24,11 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="578dp"
         android:layout_marginTop="15dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvStatistics"
         />
 
@@ -34,9 +37,14 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:layout_marginHorizontal="20dp"
         android:text="Back to menu"
         app:layout_constraintTop_toBottomOf="@+id/listView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
         tools:layout_editor_absoluteX="0dp" />
 
 

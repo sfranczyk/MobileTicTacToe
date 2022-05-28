@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button buttonSinglePlayer = findViewById(R.id.btnSinglePlayer);
-        Button buttonTwoPlayers = findViewById(R.id.btnTwoPlayers);
+        Button buttonTwoPlayers = findViewById(R.id.btnTwoPlayersHotseat);
         Button buttonStatistics = findViewById(R.id.btnStatistics);
         Button buttonExit = findViewById(R.id.btnExit);
 

@@ -10,19 +10,18 @@ public class GameUnitTest {
     GameState gameState = new GameState();
     @Test
     public void checkHorizontalWin() {
-        gameState.playerMove(1);
-        gameState.playerMove(10);
-
-        gameState.playerMove(2);
-        gameState.playerMove(11);
-
-        gameState.playerMove(3);
-        gameState.playerMove(12);
-
-        gameState.playerMove(4);
-        gameState.playerMove(13);
-
-        gameState.playerMove(5);
+        gameState.setCellValues( new int[] {
+            0, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            2, 2, 2, 2, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        });
 
         gameState.checkWin();
 

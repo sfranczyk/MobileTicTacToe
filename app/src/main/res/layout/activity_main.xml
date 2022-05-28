@@ -16,49 +16,81 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="20dp"
             android:text="@string/tik_tak_toe_game"
             android:textAlignment="center"
-            android:textSize="30sp"
+            android:textSize="35sp"
+            android:textAllCaps="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnTwoPlayers"
+            android:id="@+id/btnTwoPlayersOnline"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_marginTop="36dp"
-            android:text="Two Players"
+            android:layout_marginTop="20dp"
+            android:text="Two Players Online"
             app:layout_constraintTop_toBottomOf="@+id/textView"
+            android:textAllCaps="false"
+            android:textSize="26sp"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <Button
+            android:id="@+id/btnTwoPlayersHotseat"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="15dp"
+            android:text="Two Players Offline"
+            app:layout_constraintTop_toBottomOf="@+id/btnTwoPlayersOnline"
+            android:textAllCaps="false"
+            android:textSize="26sp"
             tools:layout_editor_absoluteX="0dp" />
 
         <Button
             android:id="@+id/btnSinglePlayer"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:text="Game with computer"
-            app:layout_constraintTop_toBottomOf="@+id/btnTwoPlayers"
+            app:layout_constraintTop_toBottomOf="@+id/btnTwoPlayersHotseat"
+            android:textAllCaps="false"
+            android:textSize="26sp"
             tools:layout_editor_absoluteX="16dp" />
 
         <Button
             android:id="@+id/btnStatistics"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_marginTop="25dp"
-            android:text="Statistics"
+            android:layout_marginTop="35dp"
             app:layout_constraintTop_toBottomOf="@+id/btnSinglePlayer"
+            android:text="Statistics"
+            android:textAllCaps="false"
+            android:textSize="26sp"
             tools:layout_editor_absoluteX="16dp" />
 
         <Button
             android:id="@+id/btnExit"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_marginTop="25dp"
-            android:text="Exit"
+            android:layout_marginTop="15dp"
             app:layout_constraintTop_toBottomOf="@+id/btnStatistics"
+            android:text="Exit"
+            android:textAllCaps="false"
+            android:textSize="26sp"
             tools:layout_editor_absoluteX="16dp" />
+
+        <ImageView
+            android:id="@+id/imageViewLogo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:srcCompat="@drawable/logo"
+            app:layout_constraintTop_toBottomOf="@+id/btnExit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="30dp"
+            android:contentDescription="Logo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

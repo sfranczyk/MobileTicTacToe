@@ -6,16 +6,11 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-enum CellValue {
-    FREE,
-    O, X, ERR
-}
-
 public class GameState {
-
     protected CellValue[] cellValues = new CellValue[100];
     protected CellValue currentTurn;
     protected final int[] dimensions = {10, 10};
@@ -37,6 +32,20 @@ public class GameState {
             return CellValue.ERR;
         }
         return cellValues[cellIndex];
+    }
+
+    public void setCellValues(CellValue[] cellValues) {
+        this.cellValues = cellValues;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setCellValues(int[] cellIntValues) {
+        if (cellIntValues.length == this.cellValues.length) {
+            for (int i = 0; i < cellIntValues.length; ++i) {
+                cellValues[i] = cellIntValues[i] >= 0 && cellIntValues[i] < 4
+                        ? CellValue.values()[cellIntValues[i]] : CellValue.ERR;
+            }
+        }
     }
 
     public boolean playerMove(int cellIndex) {

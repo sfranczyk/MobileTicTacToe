@@ -43,15 +43,16 @@
                 android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/btnTwoPlayers"
+                android:id="@+id/btnTwoPlayersHotseat"
                 android:layout_width="300dp"
                 android:layout_height="70dp"
-                android:layout_gravity="right"
-                android:text="Two Players" />
+                android:layout_gravity="end"
+                android:text="Two Players Offline" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linear2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="23dp"
@@ -70,12 +71,23 @@
                 android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/btnExit"
+                android:id="@+id/btnTwoPlayersOnline"
                 android:layout_width="300dp"
                 android:layout_height="70dp"
                 android:layout_gravity="right"
-                android:text="Exit" />
+                android:text="Two Players Online" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnExit"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="15dp"
+            android:text="Exit"
+            app:layout_constraintTop_toBottomOf="@+id/linear2"
+            android:textAllCaps="false"
+            android:textSize="27sp"
+            tools:layout_editor_absoluteX="0dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
