@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
@@ -15,7 +15,10 @@ tools:context=".GameActivity">
         android:text="@string/tik_tak_toe_game"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:typeface="normal" />
+        android:typeface="normal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
     <GridView
         android:id="@+id/boardGame"
@@ -26,15 +29,21 @@ tools:context=".GameActivity">
 
         android:layout_margin="10dp"
         android:background="#000000"
-        android:stretchMode="columnWidth"
+        app:layout_constraintTop_toBottomOf="@+id/gameTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
          />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:id="@+id/actionPanel"
-        android:layout_below="@id/boardGame">
+        app:layout_constraintTop_toBottomOf="@+id/boardGame"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
 
         <GridLayout
             android:layout_width="wrap_content"
@@ -120,4 +129,4 @@ tools:context=".GameActivity">
             android:textSize="20sp" />
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

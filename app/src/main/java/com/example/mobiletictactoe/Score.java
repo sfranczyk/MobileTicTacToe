@@ -12,7 +12,7 @@ public class Score {
     public int oScore;
     public int xScore;
     public Date date;
-    public boolean withAi;
+    public String opponent;
 
     @NonNull
     @SuppressLint("DefaultLocale")
@@ -22,6 +22,6 @@ public class Score {
         String strDate = dateFormat.format(date);
 
         return String.format("O: %d, X: %d | %s | date: %s", oScore, xScore,
-                withAi ? "PvAI" : "PvP", strDate);
+                opponent, strDate);
     }
 }

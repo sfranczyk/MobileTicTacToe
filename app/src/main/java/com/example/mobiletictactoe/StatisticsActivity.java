@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.mobiletictactoe.scoreDb.ScoresRepository;
+
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 

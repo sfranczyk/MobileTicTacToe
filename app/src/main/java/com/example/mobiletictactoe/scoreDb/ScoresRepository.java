@@ -1,4 +1,4 @@
-package com.example.mobiletictactoe;
+package com.example.mobiletictactoe.scoreDb;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -9,6 +9,9 @@ import android.os.Build;
 import android.provider.BaseColumns;
 
 import androidx.annotation.RequiresApi;
+
+import com.example.mobiletictactoe.GameMode;
+import com.example.mobiletictactoe.Score;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -22,14 +25,29 @@ public class ScoresRepository {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void insertNewScore(int oScore, int xScore, boolean isAi) {
+    public void insertNewScore(int oScore, int xScore, GameMode mode) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String opponent;
+        switch (mode) {
+            case SinglePlayer:
+                opponent = "COMPUTER";
+                break;
+            case PvPOnline:
+                opponent = "GAMER ONLINE";
+                break;
+            case PvPOffline:
+                opponent = "GAMER OFFLINE";
+                break;
+            default:
+                opponent = "";
+        }
 
         ContentValues values = new ContentValues();
         values.put(ScoresForSave.PlayerScoreColumns.O_SCORE, oScore);
         values.put(ScoresForSave.PlayerScoreColumns.X_SCORE, xScore);
         values.put(ScoresForSave.PlayerScoreColumns.TIME, Instant.now().toString());
-        values.put(ScoresForSave.PlayerScoreColumns.COMPUTER, isAi ? 1 : 0);
+        values.put(ScoresForSave.PlayerScoreColumns.OPPONENT, opponent);
 
         db.insert(ScoresForSave.PlayerScoreColumns.TABLE_NAME, null, values);
     }
@@ -43,7 +61,7 @@ public class ScoresRepository {
                 ScoresForSave.PlayerScoreColumns.O_SCORE,
                 ScoresForSave.PlayerScoreColumns.X_SCORE,
                 ScoresForSave.PlayerScoreColumns.TIME,
-                ScoresForSave.PlayerScoreColumns.COMPUTER
+                ScoresForSave.PlayerScoreColumns.OPPONENT
         };
 
         String sortOrder = ScoresForSave.PlayerScoreColumns.TIME + " DESC";
@@ -62,8 +80,8 @@ public class ScoresRepository {
                     cursor.getColumnIndexOrThrow(ScoresForSave.PlayerScoreColumns.X_SCORE));
             s.date = Date.from( Instant.parse( cursor.getString(
                     cursor.getColumnIndexOrThrow(ScoresForSave.PlayerScoreColumns.TIME))));
-            s.withAi = cursor.getInt(
-                    cursor.getColumnIndexOrThrow(ScoresForSave.PlayerScoreColumns.COMPUTER)) == 1;
+            s.opponent = cursor.getString(
+                    cursor.getColumnIndexOrThrow(ScoresForSave.PlayerScoreColumns.OPPONENT));
 
             scores.add(s);
         }

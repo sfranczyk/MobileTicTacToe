@@ -1,4 +1,4 @@
-package com.example.mobiletictactoe;
+package com.example.mobiletictactoe.scoreDb;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,7 +11,7 @@ public class ScoresDbHelper extends SQLiteOpenHelper {
                     ScoresForSave.PlayerScoreColumns.O_SCORE + " INTEGER," +
                     ScoresForSave.PlayerScoreColumns.X_SCORE + " INTEGER," +
                     ScoresForSave.PlayerScoreColumns.TIME + " TEXT," +
-                    ScoresForSave.PlayerScoreColumns.COMPUTER + " INTEGER)";
+                    ScoresForSave.PlayerScoreColumns.OPPONENT + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + ScoresForSave.PlayerScoreColumns.TABLE_NAME;

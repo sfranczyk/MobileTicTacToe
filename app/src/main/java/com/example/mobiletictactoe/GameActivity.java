@@ -12,14 +12,22 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.mobiletictactoe.scoreDb.ScoresRepository;
 import com.example.mobiletictactoe.interfaces.IGameAi;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -33,6 +41,16 @@ public class GameActivity extends AppCompatActivity {
     private Button btnNextGame;
     private Button btnBackToMenu;
 
+    String roomName = "";
+    String role = "";
+    String message = "";
+    String move;
+
+    FirebaseDatabase database;
+    DatabaseReference messageRef;
+    GameMode mode;
+    boolean escaped = false;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +58,9 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
         hideTopBars();
 
-        boolean isAi = getIntent().getBooleanExtra("isAi", false);
+        mode = GameMode.values()[getIntent().getIntExtra("mode", 0)];
 
+        TextView tvNameRoom = findViewById(R.id.gameTitle);
         GridView board = findViewById(R.id.boardGame);
         textViewScorePlayerO = findViewById(R.id.textViewScorePlayerO);
         textViewScorePlayerX = findViewById(R.id.textViewScorePlayerX);
@@ -51,21 +70,71 @@ public class GameActivity extends AppCompatActivity {
         setGameObjects(savedInstanceState);
         btnNextGameDisabled();
 
-        if (isAi) {
+        if (mode == GameMode.SinglePlayer) {
             ai = new GameAi(gameState);
+        } else if (mode == GameMode.PvPOnline) {
+            database =FirebaseDatabase.getInstance();
+            roomName = getIntent().getStringExtra("roomName");
+
+            if (getIntent().getBooleanExtra("opponent", false)) {
+                role = "quest";
+            } else {
+                role = "host";
+            }
+            move = "host";
+
+            tvNameRoom.setText(role + ": " + roomName);
+
+            messageRef = database.getReference("rooms/" + roomName + "/message");
+            addMessageEventListener();
         }
+
         adapter = new CellAdapter(this, gameState, getCellDimension(board));
         board.setAdapter(adapter);
 
         board.setOnItemClickListener((adapterView, view, position, l) -> {
-            playerMove(position);
+            switch (mode) {
+                case SinglePlayer:
+                    playerMove(position);
+                    if (!gameState.isEnd()) {
+                        updateDisplayCurrentTurn();
+                    }
+                    playerMove(ai.getNextMove());
+                    break;
+                case PvPOffline:
+                    playerMove(position);
+                    if (!gameState.isEnd()) {
+                        updateDisplayCurrentTurn();
+                    }
+                    break;
+                case PvPOnline:
+                    if (role.equals("host")) {
+                        if (move.equals("guest"))
+                            return;
+                        playerMove(position);
+                        if (!gameState.isEnd()) {
+                            updateDisplayCurrentTurn();
+                            message = "host:move:" + position;
+                        } else {
+                            message = "host:move:" + position + ":win";
+                        }
+                        messageRef.setValue(message);
+                        move = "guest";
 
-            if (!gameState.isEnd()) {
-                updateDisplayCurrentTurn();
-            }
-
-            if (isAi) {
-                playerMove(ai.getNextMove());
+                    } else {
+                        if (move.equals("host"))
+                            return;
+                        playerMove(position);
+                        if (!gameState.isEnd()) {
+                            updateDisplayCurrentTurn();
+                            message = "guest:move:" + position;
+                        } else {
+                            message = "guest:move:" + position + ":win";
+                        }
+                        messageRef.setValue(message);
+                        move = "host";
+                    }
+                    break;
             }
         });
 
@@ -74,13 +143,28 @@ public class GameActivity extends AppCompatActivity {
             btnNextGameDisabled();
             adapter.notifyDataSetChanged();
             updateDisplayCurrentTurn();
+
+            if (mode == GameMode.PvPOnline) {
+                message = "host:nextgame";
+                messageRef.setValue(message);
+                move = "host";
+            }
         });
 
         btnBackToMenu.setOnClickListener((l) -> {
             if (gameStatistics.getScorePlayerO() > 0 || gameStatistics.getScorePlayerX() > 0) {
                 ScoresRepository sr = new ScoresRepository(this);
                 sr.insertNewScore(gameStatistics.getScorePlayerO(),
-                        gameStatistics.getScorePlayerX(), isAi);
+                        gameStatistics.getScorePlayerX(), mode);
+
+                if (mode == GameMode.PvPOnline) {
+                    if (!escaped) {
+                        message = role + ":isout";
+                        messageRef.setValue(message);
+                    } else {
+                        database.getReference("rooms/" + roomName).removeValue();
+                    }
+                }
             }
 
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -88,10 +172,76 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    private void addMessageEventListener() {
+        messageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //message received
+                String newMessage = dataSnapshot.getValue(String.class);
+                Log.d("gg", "onDataChange: " + newMessage);
+                if (newMessage == null)
+                    return;
+                if (role.equals("host")) {
+                    if (newMessage.contains("guest:")) {
+                        if (newMessage.contains("move")) {
+                            String[] content = newMessage.split(":");
+                            int position = Integer.parseInt(content[2]);
+                            playerMove(position);
+                            if (!gameState.isEnd()) {
+                                updateDisplayCurrentTurn();
+                            }
+                            move = role;
+                        } else if (newMessage.contains("isout")) {
+                            btnNextGameDisabled();
+                            btnNextGame.setText("host escaped");
+                            escaped = true;
+                        }
+                    }
+                } else {
+                    if (newMessage.contains("host:")) {
+                        if (newMessage.contains("move")) {
+                            String[] content = newMessage.split(":");
+                            int position = Integer.parseInt(content[2]);
+                            playerMove(position);
+                            if (!gameState.isEnd()) {
+                                updateDisplayCurrentTurn();
+                            }
+                            move = role;
+                        } else if (newMessage.contains("nextgame")) {
+                            gameState.reset(CellValue.O);
+                            btnNextGameDisabled();
+                            adapter.notifyDataSetChanged();
+                            updateDisplayCurrentTurn();
+                            move = "host";
+                        } else if (newMessage.contains("isout")) {
+                            btnNextGameDisabled();
+                            btnNextGame.setText("guest escaped");
+                            escaped = true;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //error
+                messageRef.setValue(message);
+            }
+        });
+    }
+
     private void afterWin() {
         gameStatistics.incrementScore(gameState.getWinner());
         updateGameStatisticsTextView();
-        btnNextGameEnabled();
+        if (mode != GameMode.PvPOnline) {
+            btnNextGameEnabled();
+        } else {
+            if (role.equals("host")) {
+                btnNextGameEnabled();
+            } else {
+                btnNextGame.setText("Waiting for host");
+            }
+        }
     }
 
     private void playerMove(int position) {
@@ -140,15 +290,17 @@ public class GameActivity extends AppCompatActivity {
         int boardDimensions = (orientation == Configuration.ORIENTATION_LANDSCAPE ?
                 screen_height : screen_width) - marginsWidth * 2;
 
+        boardDimensions = boardDimensions - boardDimensions % 259;
+
+        int gridWidth = boardDimensions / 259;
+        int cellDimension = gridWidth * 25;
+
         ViewGroup.LayoutParams params = board.getLayoutParams();
-        params.height = params.width = boardDimensions;
+        params.height = params.width = boardDimensions - 3;
         board.setLayoutParams(params);
 
-        int cellDimension = boardDimensions * 10 / 109;
-        int gridWidth = boardDimensions * 2 / 105;
-
-        board.setVerticalSpacing(gridWidth);
-        board.setHorizontalSpacing(gridWidth + 2);
+        board.setHorizontalSpacing(gridWidth * 5);
+        board.setVerticalSpacing(gridWidth * 3 + 3);
 
         return cellDimension;
     }
